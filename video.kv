@@ -1,0 +1,14 @@
+#: kivy 1.9.0
+#: set _default_video "check.mp4"
+#: set _default_image "images.jpg"
+
+<Video>:
+    cover: _cover
+    image: _default_image
+    allow_stretch: True
+    color: 0,0,0,0
+    source: _default_video
+    AsyncImage:
+        id: _cover
+        source: root.image
+        size: root.width,root.height
