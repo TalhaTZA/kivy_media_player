@@ -1,9 +1,12 @@
 #: kivy 1.9.0
 #: set _default_video "check.mp4"
-#: set _default_image "images.jpg"
+#: set _default_image "http://obtineo.dk/wp-content/uploads/2016/09/Pic_de_neige_cordier_Face_E.jpg"
+#: set _default_surl "https://www.ted.com/talks/subtitles/id/97/lang/en"
 
 <Video>:
     cover: _cover
+    surl: _default_surl
+    slabel: _slabel
     image: _default_image
     allow_stretch: True
     color: 0,0,0,0
@@ -12,3 +15,8 @@
         id: _cover
         source: root.image
         size: root.width,root.height
+    
+    Subtitle:
+        id: _slabel
+        x: (root.width - self.width)/2
+        
