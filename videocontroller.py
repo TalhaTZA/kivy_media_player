@@ -24,7 +24,7 @@ class VideoController(FloatLayout):
     
     def on_touch_down(self,touch):
         if self.collide_point(*touch.pos):
-            if hasattr(self,'animationVB'):
+            if hasattr(self,'aimationVB'):
                 self.aimationVB.cancel(self.control_bar)
             self.play_pause.state='normal'
         return super().on_touch_down(touch)
