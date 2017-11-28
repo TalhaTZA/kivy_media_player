@@ -1,10 +1,12 @@
 from kivy.app import App
 from video import Video
+from videocontroller import VideoController
 
 
 class KivyPlayerApp(App):
     def build(self):
-        self.video=Video()
+        return VideoController()
+        '''self.video=Video()
         self.video.bind(on_touch_down=self.touch_down)
         return self.video
 
@@ -15,7 +17,7 @@ class KivyPlayerApp(App):
             self.video.state='play'
         
         if touch.is_double_tap:
-            self.video.state='stop'
+            self.video.state='stop'''
 
 if __name__ in ('__main__'):
     KivyPlayerApp().run()
