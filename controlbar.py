@@ -17,11 +17,11 @@ class VideoStop(ButtonBehavior,Image):
 class VideoSlider(Slider):
 
     def on_touch_down(self,touch):
-        video=self.parent.parent.video
+        self.video=self.parent.parent.video
         if self.collide_point(*touch.pos):
-            self.pre_state=video.state
+            self.pre_state=self.video.state
             self.pre_touch=touch
-            video.state='pause'
+            self.video.state='pause'
         return super().on_touch_down(touch)
 
     def on_touch_up(self,touch):
@@ -31,3 +31,10 @@ class VideoSlider(Slider):
             if self.pre_state != 'stop':
                 video.state=self.pre_state
         return super().on_touch_up(touch)
+
+    def on_touch_move(self,touch):
+        if self.collide_point(*touch.pos) and hasattr(self,'pre_touch') and touch is self.pre_touch:
+            self.video.seek(self.value)
+            if self.pre_state != 'stop':
+                self.video.state=self.pre_state
+        return super().on_touch_move(touch)
