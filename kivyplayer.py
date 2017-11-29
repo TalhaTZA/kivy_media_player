@@ -4,8 +4,9 @@ from kivy.animation import Animation
 from kivy.uix.behaviors import ToggleButtonBehavior
 from kivy.uix.actionbar import ActionPrevious
 from kivy.lang import Builder
-
+from kivy.uix.popup import Popup
 from videocontroller import VideoController
+from loaddialog import LoadDialog
 
 Builder.load_file('actiontextinput.kv')
 
@@ -33,7 +34,16 @@ class KivyPlayer(FloatLayout):
             self.video_controller.video.volume=1
     
     def show_load_list(self):
+        content=LoadDialog(load=self.load_list,cancel=self.dismiss_popup)
+        self.popup=Popup(title='Load a file first',content=content,size_hint=(1,1))
+        self.popup.open()
+    
+    def load_list(self,path,filename):
         pass
+    
+    def dismiss_popup(self):
+        self.popup.dismiss()
+
     
     def search(self,text):
         pass
