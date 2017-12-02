@@ -7,14 +7,30 @@ from kivy.lang import Builder
 from kivy.uix.popup import Popup
 from videocontroller import VideoController
 from loaddialog import LoadDialog
+import json, os
+from sidebar import ListItem
 
 Builder.load_file('actiontextinput.kv')
 
+_surl = 'http://www.ted.com/talks/subtitles/id/%s/lang/en'
+_meta = 'results/%s.json'
+
+
 class ActionListButton(ToggleButtonBehavior,ActionPrevious):
-    pass
+    def on_state(self,instance,value):
+        if value== 'normal':
+            self.animationSB=Animation(right=0)
+            self.animationSB.start(self.root.side_bar)
+        else:
+            self.root.side_bar.x=0
 
 
 class KivyPlayer(FloatLayout):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(**kwargs)
+        self.playlist.bind(minimum_height=self.playlist.setter('height'))
+
     def hide_bars(self,instance,playing):
         if playing:
             self.list_button.state='normal'
@@ -39,12 +55,26 @@ class KivyPlayer(FloatLayout):
         self.popup.open()
     
     def load_list(self,path,filename):
-        pass
+        json_data=open(os.path.join(path, filename[0]))
+        #print(path)
+        data = json.load(json_data)
+        json_data.close()
+        self.load_from_json(data)
     
     def dismiss_popup(self):
         self.popup.dismiss()
 
-    
+    def load_from_json(self,data):
+        self.playlist.clear_widgets()
+        for val in data['results']:
+            t = val['talk']
+            video = self.video_controller.video
+            meta = _meta % t['id']
+            surl = _surl % t['id']
+            item = ListItem(video, meta, surl,text=t['name'])
+            self.playlist.add_widget(item)
+        self.list_button.state = 'down'
+
     def search(self,text):
         pass
 
