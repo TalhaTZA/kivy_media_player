@@ -9,12 +9,14 @@ from videocontroller import VideoController
 from loaddialog import LoadDialog
 import json, os
 from sidebar import ListItem
+from kivy.network.urlrequest import UrlRequest
 
 Builder.load_file('actiontextinput.kv')
 
-_surl = 'http://www.ted.com/talks/subtitles/id/%s/lang/en'
-_meta = 'results/%s.json'
-
+_surl = 'https://www.ted.com/talks/subtitles/id/%s/lang/en'
+_meta = 'https://api.ted.com/v1/talks/%s.json?api-key=%s'
+_api = '79bcca13c0cc74523125332a1032ff104b62a163'
+_search = 'https://api.ted.com/v1/search.json?q=%s&categories=talks&api-key=%s'
 
 class ActionListButton(ToggleButtonBehavior,ActionPrevious):
     def on_state(self,instance,value):
@@ -59,24 +61,33 @@ class KivyPlayer(FloatLayout):
         #print(path)
         data = json.load(json_data)
         json_data.close()
-        self.load_from_json(data)
+        self.load_from_json(data,0)
     
     def dismiss_popup(self):
         self.popup.dismiss()
 
-    def load_from_json(self,data):
+    def load_from_json(self,data,flag=1):
         self.playlist.clear_widgets()
         for val in data['results']:
             t = val['talk']
             video = self.video_controller.video
-            meta = _meta % t['id']
+            if flag==0:
+                meta= ('results/{}.json').format(t['id'])
+            else:
+                meta = _meta % (t['id'],_api)
             surl = _surl % t['id']
             item = ListItem(video, meta, surl,text=t['name'])
             self.playlist.add_widget(item)
+        self.dismiss_popup()
         self.list_button.state = 'down'
 
     def search(self,text):
-        pass
+        url=_search %(text,_api)
+        #print(url)
+        req=UrlRequest(url,on_success=self.got_search)
+    
+    def got_search(self,req,result):
+        self.load_from_json(result)
 
 class KivyPlayerApp(App):
     def build(self):
